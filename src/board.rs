@@ -33,6 +33,17 @@ impl Board {
     pub fn update(&mut self) {
         if let Some(ref mut mino) = self.active_mino {
             mino.pos.y += 1;
+
+            // detect overlap
+            for y in 0..BOARD_ROW {
+                for x in 0..BOARD_COL {
+                    let mino_pixel = mino.get_pixel(Int2::new(x as i32, y as i32));
+                    if mino_pixel != 0 && self.board[y][x] != 0 {
+                        mino.pos.y -= 1;
+                        return;
+                    }
+                }
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 use crate::vector::Int2;
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct Mino {
     pub shape: [[u32; 4]; 4],
     pub pos: Int2,

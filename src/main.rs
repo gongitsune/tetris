@@ -7,7 +7,6 @@ use termion::{
     event::{Event, Key},
     input::TermReadEventsAndRaw,
     raw::IntoRawMode,
-    screen::IntoAlternateScreen,
 };
 
 mod board;
@@ -31,7 +30,7 @@ fn main() -> Result<()> {
     let mut stdout = stdout().into_raw_mode()?;
 
     // main loop
-    board.put_mino(minos[0]);
+    board.put_mino(minos[0].clone());
     board.draw(&mut stdout)?;
     for ele in stdin.events_and_raw() {
         let (ev, _) = ele?;
