@@ -15,7 +15,21 @@ impl Mino {
         }
     }
 
-    fn rotate(&self, dir: i32) {}
+    pub fn rotate(&mut self, dir: i32) {
+        self.shape = {
+            let mut new_shape = [[0; 4]; 4];
+            for y in 0..4 {
+                for x in 0..4 {
+                    if dir > 0 {
+                        new_shape[y][x] = self.shape[x][3 - y];
+                    } else {
+                        new_shape[y][x] = self.shape[3 - x][y];
+                    }
+                }
+            }
+            new_shape
+        };
+    }
 
     pub fn apply(&self, board: &mut [[u32; BOARD_COL]; BOARD_ROW]) {
         for y in 0..4 {

@@ -13,21 +13,20 @@ use termion::{
     raw::IntoRawMode,
     screen::IntoAlternateScreen,
 };
-use tokio_util::sync::CancellationToken;
 
 mod board;
 mod mino;
 mod vector;
 
-pub const BOARD_ROW: usize = 10;
-pub const BOARD_COL: usize = 10;
+pub const BOARD_ROW: usize = 30;
+pub const BOARD_COL: usize = 12;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     let minos = [Mino::new([
-        [1, 1, 0, 0],
-        [1, 1, 0, 0],
         [0, 0, 0, 0],
+        [1, 1, 1, 1],
+        [0, 1, 1, 0],
         [0, 0, 0, 0],
     ])];
 
@@ -70,6 +69,9 @@ async fn main() -> Result<()> {
                     }
                     Key::Left => {
                         board.mino_x_dir = -1;
+                    }
+                    Key::Up => {
+                        board.rotate_dir = 1;
                     }
                     _ => {}
                 }
