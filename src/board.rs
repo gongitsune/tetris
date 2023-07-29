@@ -1,10 +1,11 @@
 use crate::{mino::Mino, vector::Int2, BOARD_COL, BOARD_ROW};
 use anyhow::{Ok, Result};
-use std::io::Write;
-use termion::{clear, cursor};
+use std::{char, io::Write};
+use termion::cursor;
 
 pub struct Board {
     pub board: [[u32; BOARD_COL]; BOARD_ROW],
+    pub pre_rendered: [[char; BOARD_COL]; BOARD_ROW],
     active_mino: Option<Mino>,
     pub mino_x_dir: i32,
     pub rotate_dir: i32,
@@ -23,6 +24,7 @@ impl Board {
 
         Ok(Self {
             board,
+            pre_rendered: [[' '; BOARD_COL]; BOARD_ROW],
             active_mino: None,
             mino_x_dir: 0,
             rotate_dir: 0,
@@ -82,9 +84,6 @@ impl Board {
     }
 
     pub fn draw<W: Write>(&mut self, out: &mut W) -> Result<()> {
-        write!(out, "{}", clear::All)?;
-        write!(out, "{}", cursor::Goto(1, 1))?;
-
         for (y, row) in self.board.iter().enumerate() {
             for (x, col) in row.iter().enumerate() {
                 let pixel = if let Some(ref mino) = self.active_mino {
@@ -99,9 +98,16 @@ impl Board {
                 };
                 let pixel = if pixel == 0 { ' ' } else { '#' };
 
-                write!(out, "{}", pixel)?;
+                if self.pre_rendered[y][x] != pixel {
+                    write!(out, "{}{}", cursor::Goto(x as u16 + 1, y as u16 + 1), pixel)?;
+                    self.pre_rendered[y][x] = pixel;
+                }
             }
-            write!(out, "\r\n")?;
+            write!(
+                out,
+                "{}\r\n",
+                cursor::Goto(BOARD_COL as u16 + 1, y as u16 + 1)
+            )?;
         }
 
         out.flush()?;
