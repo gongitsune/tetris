@@ -1,4 +1,5 @@
-use crate::vector::Int2;
+use crate::{vector::Int2, BOARD_COL, BOARD_ROW};
+use std::usize;
 
 #[derive(Clone)]
 pub struct Mino {
@@ -15,6 +16,21 @@ impl Mino {
     }
 
     fn rotate(&self, dir: i32) {}
+
+    pub fn apply(&self, board: &mut [[u32; BOARD_COL]; BOARD_ROW]) {
+        for y in 0..4 {
+            for x in 0..4 {
+                let pixel = self.shape[y as usize][x as usize];
+                if pixel == 0 {
+                    continue;
+                }
+
+                let (board_y, board_x) = (self.pos.y - 3 + y, self.pos.x + x);
+                board[board_y as usize][board_x as usize] = pixel;
+            }
+        }
+    }
+
     pub fn get_pixel(&self, pos: Int2) -> u32 {
         let (y, x) = (3 - self.pos.y + pos.y, pos.x - self.pos.x);
 

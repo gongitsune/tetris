@@ -40,6 +40,8 @@ impl Board {
                     let mino_pixel = mino.get_pixel(Int2::new(x as i32, y as i32));
                     if mino_pixel != 0 && self.board[y][x] != 0 {
                         mino.pos.y -= 1;
+                        mino.apply(&mut self.board);
+                        self.active_mino = None;
                         return;
                     }
                 }
@@ -53,17 +55,19 @@ impl Board {
 
         for (y, row) in self.board.iter().enumerate() {
             for (x, col) in row.iter().enumerate() {
-                if let Some(ref mino) = self.active_mino {
-                    write!(
-                        out,
-                        "{}",
-                        if mino.get_pixel(Int2::new(x as i32, y as i32)) != 0 || *col != 0 {
-                            '#'
-                        } else {
-                            ' '
-                        }
-                    )?;
-                }
+                let pixel = if let Some(ref mino) = self.active_mino {
+                    let pixel = mino.get_pixel(Int2::new(x as i32, y as i32));
+                    if pixel == 0 {
+                        *col
+                    } else {
+                        pixel
+                    }
+                } else {
+                    *col
+                };
+                let pixel = if pixel == 0 { ' ' } else { '#' };
+
+                write!(out, "{}", pixel)?;
             }
             write!(out, "\r\n")?;
         }
