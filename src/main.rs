@@ -25,7 +25,7 @@ pub const BOARD_COL: usize = 12;
 async fn main() -> Result<()> {
     let minos = [Mino::new([
         [0, 0, 0, 0],
-        [1, 1, 1, 1],
+        [0, 1, 1, 0],
         [0, 1, 1, 0],
         [0, 0, 0, 0],
     ])];
@@ -80,6 +80,10 @@ async fn main() -> Result<()> {
 
         board.update();
         board.draw(&mut stdout).unwrap();
+
+        if !board.exist_active_mino {
+            board.put_mino(minos[0].clone());
+        }
         tokio::time::sleep(Duration::from_millis(100)).await;
     }
 }

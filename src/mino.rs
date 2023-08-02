@@ -45,6 +45,14 @@ impl Mino {
         }
     }
 
+    pub fn set_pixel(&mut self, pos: Int2, pixel: u32) {
+        let (y, x) = (3 - self.pos.y + pos.y, pos.x - self.pos.x);
+
+        if !(y > 3 || y < 0 || x > 3 || x < 0) {
+            self.shape[y as usize][x as usize] = pixel;
+        }
+    }
+
     pub fn get_pixel(&self, pos: Int2) -> u32 {
         let (y, x) = (3 - self.pos.y + pos.y, pos.x - self.pos.x);
 
